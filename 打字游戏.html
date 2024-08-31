@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>打字游戏</title>
+</head>
+<script>
+    //创建一个数组缓存所有label元素
+    var Array=new Array();
+    window.onload=function () {
+        //设置开始按钮为可用
+        var start=document.getElementById("start");
+        start.disabled=false;
+        start.onclick=BeginGame;
+     }
+    //开始游戏
+    function BeginGame() {
+        //设置开始游戏为不可用
+        this.disabled=true;
+
+        //随机生成label元素，并添加到body中
+       setInterval(function () {
+           var labEl=createLable();
+           document.body.appendChild(labEl);
+           Array.push(labEl);
+       },1000);
+
+       //让label元素周期性往下掉
+        //获取浏览器高度
+        var clientHeight=document.documentElement.clientHeight-40;
+        setInterval(function () {
+            for (var index in Array) {
+                var ele=Array[index];
+                var oldtop=parseInt(ele.style.top);
+                if(oldtop<clientHeight){
+                    ele.style.top=oldtop+30+"px";
+                }else {
+                    //超过浏览器高度时删除该元素和数组中的缓存
+                    ele.parentNode.removeChild(ele);
+                    Array.splice(index,1);
+                }
+            }
+        },100);
+
+        //当键盘按此字母时，删除该元素
+        document.body.onkeydown=function (target) {
+            var targetEle=String.fromCharCode(target.keyCode);
+            for (var index in Array) {
+                var ele=Array[index];
+                if(targetEle==ele.innerHTML){
+                    ele.parentNode.removeChild(ele);
+                    Array.splice(index,1);
+                }
+            }
+        }
+    }
+
+
+    //生成label元素
+    function createLable() {
+        //获取浏览器宽度
+        var clientWidth = document.documentElement.clientWidth;
+        //获取浏览器高度
+        var clientHeight=document.documentElement.clientHeight;
+        //距离浏览器左端的像素
+        var left=parseInt(Math.random()*clientWidth)-30;
+        var label=document.createElement("label");
+        label.innerHTML=String.fromCharCode(65+Math.random()*26);
+        label.style.position="absolute";
+        label.style.top="30px";
+        label.style.left=left+"px";
+        label.style.backgroundColor="orange";
+        label.style.width="20px";
+        label.style.textAlign="center";
+        label.style.fontWeight="bold";
+        return label;
+    }
+
+</script>
+<body>
+    <input type="button" id="start" disabled value="开始游戏"/>
+</body>
+</html>
